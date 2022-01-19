@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>My To Do List</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+    box-sizing: border-box;
+}
+main {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+form#add_task {
+    background: #f34334;
+    color: #FFF;
+    text-align: center;
+    padding: 25px 30px 25px 30px;
+}
+
+form#add_task h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+}
+
+form#add_task .form_elems {
+    display: flex;
+}
+
+form#add_task .form_elems input {
+    width: calc(100% - 120px);
+    border: 0;
+    margin: 0;
+    padding: 0 10px;
+}
+
+form#add_task .form_elems button {
+    width: 120px;
+    margin: 0;
+    padding: 9px 0;
+    border: 0;
+    color: #4c4c4c;
+}
+
+#tasks_list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: #f9f9f9;
+}
+#tasks_list > li {
+    margin: 0;
+    padding: 0 10px 0 26px;
+    display: flex;
+    min-height: 40px;
+    align-items: center;
+}
+#tasks_list > li:nth-child(2n) {
+    background: #EEE;
+}
+#tasks_list > li > .task_date {
+    width: 28%;
+}
+#tasks_list > li > .task_title {
+    width: calc(72% - 40px);
+    padding-left: 10px;
+    font-weight: bold;
+}
+#tasks_list > li > .task_actions {
+    width: 40px;
+    text-align: right;
+}
+#tasks_list > li > .task_actions > button {
+    padding: 2px 6px;
+    background: transparent;
+    border: 0;
+}
+#tasks_counter {
+    text-align: right;
+    margin-top: 10px;
+}
+
+</style>
+
+</head>
+<body>
+    <main>
+        <form id="add_task">
+            <h1>My To Do List</h1>
+            <div class="form_elems">
+                <input type="text" name="title" placeholder="Title...">
+                <button type="submit">Add</button>
+            </div>
+        </form>
+        <ul id="tasks_list"></ul>
+        <div id="tasks_counter">Tienes un total de <span>0</span> tareas para hacer</div>
+    </main>
+
+
+    <script>
+        var tasksList   = document.getElementById('tasks_list');
+        var counterNode = document.querySelector('#tasks_counter span');
+
+        function getListElemFromInputData(taskTitle) {
+
+            var date = new Date();
+
+            var datestring =
+                date.getDate()      + "/" +
+                (date.getMonth()+1) + "/" +
+                date.getFullYear()  + " " +
+                date.getHours()     + ":" +
+                date.getMinutes()   + "h";
+
+            return `<li>
+                <div class="task_date">
+                    ${datestring}
+                </div>
+                <div class="task_title">
+                    ${taskTitle}
+                </div>
+                <div class="task_actions">
+                    <button class="remove_task">x</button>
+                </div>`;
+        }
+
+
+        function updateCounter() {
+            let tasksCounter = tasksList.childNodes.length;
+            counterNode.innerHTML = tasksCounter;
+        }
+        
+        function onSubmitForm(event) {
+            event.preventDefault();
+
+            let taskTitle = event.target.title.value;
+
+            if (taskTitle == '') {
+                return;
+            }
+
+            let newElemList = getListElemFromInputData(taskTitle);
+
+            tasksList.insertAdjacentHTML('beforeend', newElemList);
+
+            event.target.title.value = '';
+
+            updateCounter();
+        }
+
+
+        function onRemoveTask(event) {
+
+            if (!event.target.classList.contains('remove_task')) {
+                return;
+            }
+
+            event.target.closest('li').remove();
+
+            updateCounter();
+        }
+
+        // Form submit listener
+        let addTaskForm = document.getElementById('add_task');
+        addTaskForm.addEventListener('submit', onSubmitForm);
+    
+
+        // Remove task listener
+        document.addEventListener('click', onRemoveTask)
+    </script>
+</body>
+</html>
